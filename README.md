@@ -42,6 +42,8 @@ export default defineConfig({
 | `priority` | `number` | `0.7` | Page priority (0.0–1.0) |
 | `lastmod` | `Date` | `new Date()` | Last modified date |
 | `outDir` | `string` | build.outDir | Output directory |
+| `robotsTxt` | `boolean` | `true` | Auto-generate `robots.txt` |
+| `disallow` | `string[]` | `[]` | Paths to disallow in robots.txt |
 
 ## License
 

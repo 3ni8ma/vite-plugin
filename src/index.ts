@@ -9,6 +9,8 @@ interface SitemapOptions {
   priority?: number
   lastmod?: Date
   outDir?: string
+  robotsTxt?: boolean
+  disallow?: string[]
 }
 
 function escapeXml(str: string): string {
@@ -34,7 +36,12 @@ export function sitemap(options: SitemapOptions): Plugin {
         priority = 0.7,
         lastmod = new Date(),
         outDir = config.build.outDir,
+        robotsTxt = true,
+        disallow = [],
       } = options
+
+      const resolvedOutDir = resolve(config.root, outDir)
+      mkdirSync(resolvedOutDir, { recursive: true })
 
       const lastmodStr = lastmod.toISOString().split('T')[0]
 
@@ -53,11 +60,19 @@ export function sitemap(options: SitemapOptions): Plugin {
 
       xml += '</urlset>'
 
-      const outPath = resolve(config.root, outDir, 'sitemap.xml')
-      mkdirSync(resolve(config.root, outDir), { recursive: true })
-      writeFileSync(outPath, xml, 'utf-8')
+      const sitemapPath = resolve(resolvedOutDir, 'sitemap.xml')
+      writeFileSync(sitemapPath, xml, 'utf-8')
+      config.logger.info(`[vite-plugin-sitemap] Generated sitemap at ${relative(config.root, sitemapPath)}`)
 
-      config.logger.info(`[vite-plugin-sitemap] Generated sitemap at ${relative(config.root, outPath)}`)
+      if (robotsTxt) {
+        let robots = `User-agent: *\nAllow: /\n\nSitemap: ${hostname.replace(/\/$/, '')}/sitemap.xml\n`
+        for (const path of disallow) {
+          robots += `Disallow: ${path}\n`
+        }
+        const robotsPath = resolve(resolvedOutDir, 'robots.txt')
+        writeFileSync(robotsPath, robots, 'utf-8')
+        config.logger.info(`[vite-plugin-sitemap] Generated robots.txt at ${relative(config.root, robotsPath)}`)
+      }
     },
   }
 }
