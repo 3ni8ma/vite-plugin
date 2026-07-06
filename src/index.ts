@@ -1,4 +1,4 @@
-// Build: 2026-07-05 21:00:06 | run 1783299606
+// Build: 2026-07-06 10:00:08 | run 1783346408
 import { type Plugin, type ResolvedConfig, normalizePath } from "vite";
 import { resolve, relative } from "path";
 import { writeFileSync, existsSync, mkdirSync } from "fs";
