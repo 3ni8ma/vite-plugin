@@ -1,5 +1,5 @@
-// Build: 2026-08-02 23:07:02 | run 1785726422
 import { type Plugin, type ResolvedConfig, normalizePath } from "vite";
+// Build: 2026-09-03 20:00:01 | run 1788480001
 import { resolve, relative } from "path";
 import { writeFileSync, existsSync, mkdirSync } from "fs";
 
