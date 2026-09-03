@@ -1,6 +1,14 @@
 # @3ni8ma/vite-plugin-sitemap
 
-A Vite plugin that automatically generates a `sitemap.xml` for your static site.
+[![npm version](https://img.shields.io/npm/v/@3ni8ma/vite-plugin-sitemap)](https://www.npmjs.com/package/@3ni8ma/vite-plugin-sitemap)
+[![license](https://img.shields.io/npm/l/@3ni8ma/vite-plugin-sitemap)](LICENSE)
+[![downloads](https://img.shields.io/npm/dm/@3ni8ma/vite-plugin-sitemap)](https://www.npmjs.com/package/@3ni8ma/vite-plugin-sitemap)
+
+A Vite plugin that automatically generates `sitemap.xml` and `robots.txt` on build — zero configuration beyond your route list.
+
+## Why
+
+Most static sites need a sitemap for SEO but generating one manually means maintaining a separate script or XML file. This plugin hooks into `vite build` and writes both `sitemap.xml` and `robots.txt` to your output directory automatically.
 
 ## Installation
 
@@ -19,166 +27,64 @@ export default defineConfig({
   plugins: [
     sitemap({
       hostname: 'https://example.com',
-      routes: [
-        '/',
-        '/about',
-        '/projects',
-        '/contact',
-      ],
-      changefreq: 'monthly',
-      priority: 0.7,
+      routes: ['/', '/about', '/projects', '/contact'],
     }),
   ],
 })
 ```
 
-### Options
+After `vite build`, you'll find `sitemap.xml` and `robots.txt` in your `dist/` folder.
+
+## Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `hostname` | `string` | required | Your site's base URL |
-| `routes` | `string[]` | required | Array of route paths |
-| `changefreq` | `string` | `'monthly'` | Sitemap change frequency |
-| `priority` | `number` | `0.7` | Page priority (0.0–1.0) |
-| `lastmod` | `Date` | `new Date()` | Last modified date |
-| `outDir` | `string` | build.outDir | Output directory |
-| `robotsTxt` | `boolean` | `true` | Auto-generate `robots.txt` |
-| `disallow` | `string[]` | `[]` | Paths to disallow in robots.txt |
+| `routes` | `(string \| SitemapRoute)[]` | `['/']` | Route paths or objects with per-route config |
+| `changefreq` | `string` | `'weekly'` | Default change frequency |
+| `priority` | `number` | `0.5` | Default page priority (0.0–1.0) |
+| `lastmod` | `string` | today's date | Default last modified date |
+| `outDir` | `string` | `build.outDir` | Output directory |
+| `disallow` | `string[]` | `[]` | Paths to block in robots.txt |
+| `pretty` | `boolean` | `false` | Pretty-print the XML output |
+
+### Per-route config
+
+```ts
+sitemap({
+  hostname: 'https://example.com',
+  routes: [
+    '/',
+    { path: '/blog', changefreq: 'daily', priority: 0.9 },
+    { path: '/admin', changefreq: 'never', priority: 0.1 },
+  ],
+  disallow: ['/admin', '/private'],
+})
+```
+
+### Generated output
+
+**sitemap.xml:**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://example.com/</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
+```
+
+**robots.txt:**
+```
+User-agent: *
+Allow: /
+
+Sitemap: https://example.com/sitemap.xml
+```
 
 ## License
 
 MIT
-
-<!-- ach: 2026-07-10 23:31:17 -->
-
-<!-- ach: 2026-07-11 02:00:33 -->
-
-<!-- ach: 2026-07-11 14:31:57 -->
-
-<!-- ach: 2026-07-11 19:30:18 -->
-
-<!-- ach: 2026-07-11 22:00:54 -->
-
-<!-- ach: 2026-07-12 15:31:30 -->
-
-<!-- ach: 2026-07-12 18:00:11 -->
-
-<!-- ach: 2026-07-12 20:31:02 -->
-
-<!-- ach: 2026-07-13 19:01:08 -->
-
-<!-- ach: 2026-07-14 02:30:10 -->
-
-<!-- ach: 2026-07-14 20:00:07 -->
-
-<!-- ach: 2026-07-14 22:30:14 -->
-
-<!-- ach: 2026-07-15 13:35:14 -->
-
-<!-- ach: 2026-07-15 18:30:34 -->
-
-<!-- ach: 2026-07-15 23:30:29 -->
-
-<!-- ach: 2026-07-16 14:30:23 -->
-
-<!-- ach: 2026-07-16 19:30:14 -->
-
-<!-- ach: 2026-07-16 22:00:11 -->
-
-<!-- ach: 2026-07-17 13:01:00 -->
-
-<!-- ach: 2026-07-17 15:30:07 -->
-
-<!-- ach: 2026-07-17 18:00:16 -->
-
-<!-- ach: 2026-07-18 01:30:17 -->
-
-<!-- ach: 2026-07-18 21:30:06 -->
-
-<!-- ach: 2026-07-19 00:00:32 -->
-
-<!-- ach: 2026-07-19 12:34:34 -->
-
-<!-- ach: 2026-07-19 20:00:02 -->
-
-<!-- ach: 2026-07-19 22:30:07 -->
-
-<!-- ach: 2026-07-20 01:00:13 -->
-
-<!-- ach: 2026-07-20 13:30:11 -->
-
-<!-- ach: 2026-07-20 16:01:24 -->
-
-<!-- ach: 2026-07-20 18:30:02 -->
-
-<!-- ach: 2026-07-20 21:00:17 -->
-
-<!-- ach: 2026-07-21 02:00:17 -->
-
-<!-- ach: 2026-07-21 19:30:50 -->
-
-<!-- ach: 2026-07-22 00:30:12 -->
-
-<!-- ach: 2026-07-22 03:00:31 -->
-
-<!-- ach: 2026-07-22 13:00:03 -->
-
-<!-- ach: 2026-07-22 15:30:38 -->
-
-<!-- ach: 2026-07-22 20:32:31 -->
-
-<!-- ach: 2026-07-23 01:32:38 -->
-
-<!-- ach: 2026-07-23 14:01:33 -->
-
-<!-- ach: 2026-07-23 19:01:03 -->
-
-<!-- ach: 2026-07-23 21:30:06 -->
-
-<!-- ach: 2026-07-24 00:00:38 -->
-
-<!-- ach: 2026-07-24 02:30:29 -->
-
-<!-- ach: 2026-07-24 12:30:18 -->
-
-<!-- ach: 2026-07-24 17:30:18 -->
-
-<!-- ach: 2026-07-25 01:00:19 -->
-
-<!-- ach: 2026-07-25 21:00:08 -->
-
-<!-- ach: 2026-07-27 18:00:33 -->
-
-<!-- ach: 2026-07-27 23:00:23 -->
-
-<!-- ach: 2026-07-28 16:31:04 -->
-
-<!-- ach: 2026-07-28 19:00:23 -->
-
-<!-- ach: 2026-07-29 17:31:08 -->
-
-<!-- ach: 2026-07-29 22:30:25 -->
-
-<!-- ach: 2026-07-30 18:30:42 -->
-
-<!-- ach: 2026-07-30 21:00:26 -->
-
-<!-- ach: 2026-07-31 02:00:38 -->
-
-<!-- ach: 2026-07-31 14:30:51 -->
-
-<!-- ach: 2026-07-31 17:08:25 -->
-
-<!-- ach: 2026-07-31 22:00:10 -->
-
-<!-- ach: 2026-08-01 03:00:26 -->
-
-<!-- ach: 2026-08-01 20:30:31 -->
-
-<!-- ach: 2026-08-01 23:00:22 -->
-
-<!-- ach: 2026-08-02 01:30:10 -->
-
-<!-- ach: 2026-08-02 19:05:55 -->
-
-<!-- ach: 2026-08-02 21:30:44 -->
